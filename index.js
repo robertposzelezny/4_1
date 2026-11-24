@@ -14,9 +14,9 @@ app.get("/math/circle/:r", (req, res) => {
   res.json(result);
 });
 
-app.get("/math/rectangle/:a/:b", (req, res) => {
-  const a = parseFloat(req.params.a);
-  const b = parseFloat(req.params.b);
+app.get("/math/rectangle/:width/:height", (req, res) => {
+  const a = parseFloat(req.params.width);
+  const b = parseFloat(req.params.height);
 
   const result = {
     area: (a * b).toFixed(2),
@@ -26,7 +26,28 @@ app.get("/math/rectangle/:a/:b", (req, res) => {
   res.json(result);
 });
 
-//TODO3
+app.get("/math/power/:base/:exponent", (req, res) => {
+  const base = Number(req.params.base);
+  const exponent = Number(req.params.exponent);
+
+  if (!Number.isFinite(base) || !Number.isFinite(exponent)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const result = Math.pow(base, exponent);
+
+  const response = { result };
+
+  if (req.query.root === "true") {
+    if (base < 0) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+
+    response.root = Math.sqrt(base);
+  }
+
+  res.json(response);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
